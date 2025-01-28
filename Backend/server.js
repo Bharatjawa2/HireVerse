@@ -7,7 +7,12 @@ dotenv.config({});
 
 const app=express(); // app is an Instance of Express application created using express()
 
-
+app.get('/home',(req,res)=>{
+    return res.status(400).json({
+        message:"hi",
+        success:true
+    })
+})
 
 // Middlewars
 app.use(express.json()); //It converts the JSON data in the request body to a JavaScript object.
