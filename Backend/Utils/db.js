@@ -10,3 +10,6 @@ const connectDB=async()=>{
 }
 
 export default connectDB;
+
+// MONGODB_URL=mongodb+srv://jawabharat05:oZAXL9QTEWe6SWx9@cluster0.lcaet.mongodb.net/
+// PORT=8080
