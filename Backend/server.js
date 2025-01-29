@@ -9,7 +9,7 @@ const app=express(); // app is an Instance of Express application created using 
 
 app.get('/home',(req,res)=>{
     return res.status(400).json({
-        message:"hi",
+        message:"hello from backend",
         success:true
     })
 })
