@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors'; //Cross-Origin Resource Sharing (CORS)
 import connectDB from './Utils/db.js';
 import dotenv from 'dotenv';// to access Environment variables
+import Router from './Routes/userRouter.js';
 dotenv.config({});
 
 const app=express(); // app is an Instance of Express application created using express()
@@ -23,6 +24,9 @@ const corsOptions={
     credentials:true
 }
 app.use(cors(corsOptions));
+
+// api's
+app.use("/api/v1/user",Router)
 
 
 const PORT=process.env.PORT || 8000;
