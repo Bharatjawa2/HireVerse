@@ -5,6 +5,7 @@ import connectDB from './Utils/db.js';
 import dotenv from 'dotenv';// to access Environment variables
 import Router from './Routes/userRouter.js';
 import companyRouter from './Routes/companyRouter.js';
+import JobRouter from './Routes/jobRouter.js';
 dotenv.config({});
 
 const app=express(); // app is an Instance of Express application created using express()
@@ -29,6 +30,7 @@ app.use(cors(corsOptions));
 // api's
 app.use("/api/v1/user",Router)
 app.use("/api/v1/company",companyRouter);
+app.use("/api/v1/job",JobRouter);
 
 
 const PORT=process.env.PORT || 8000;
