@@ -4,6 +4,7 @@ import cors from 'cors'; //Cross-Origin Resource Sharing (CORS)
 import connectDB from './Utils/db.js';
 import dotenv from 'dotenv';// to access Environment variables
 import Router from './Routes/userRouter.js';
+import companyRouter from './Routes/companyRouter.js';
 dotenv.config({});
 
 const app=express(); // app is an Instance of Express application created using express()
@@ -27,6 +28,7 @@ app.use(cors(corsOptions));
 
 // api's
 app.use("/api/v1/user",Router)
+app.use("/api/v1/company",companyRouter);
 
 
 const PORT=process.env.PORT || 8000;
