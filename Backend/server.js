@@ -6,6 +6,7 @@ import dotenv from 'dotenv';// to access Environment variables
 import Router from './Routes/userRouter.js';
 import companyRouter from './Routes/companyRouter.js';
 import JobRouter from './Routes/jobRouter.js';
+import applicationRouter from './Routes/applicationRouter.js';
 dotenv.config({});
 
 const app=express(); // app is an Instance of Express application created using express()
@@ -31,6 +32,7 @@ app.use(cors(corsOptions));
 app.use("/api/v1/user",Router)
 app.use("/api/v1/company",companyRouter);
 app.use("/api/v1/job",JobRouter);
+app.use("/api/v1/application",applicationRouter);
 
 
 const PORT=process.env.PORT || 8000;
