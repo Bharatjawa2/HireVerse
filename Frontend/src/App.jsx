@@ -1,11 +1,17 @@
 import React from 'react'
-import { Button } from './components/ui/button'
+import { Route, Routes } from 'react-router-dom'
+import Home from './pages/Home'
+import ApplyJob from './pages/ApplyJob'
+import Application from './pages/Application'
 
 const App = () => {
-  return (
+  return(
     <>
-      <h1 className='text-2xl text-green-500'>Hello, World!</h1>
-      <Button className="ml-11 text-green-400">Click me</Button>
+      <Routes>
+        <Route path='/' element={<Home/>}/>
+        <Route path='/apply-job/:id' element={<ApplyJob/>}/>
+        <Route path='/applications' element={<Application/>}/>
+      </Routes>
     </>
   )
 }
