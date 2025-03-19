@@ -1,15 +1,43 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/Appcontext';
 import { assets } from '../assets/assets';
+import axios from 'axios'
+import { toast } from 'react-toastify';
 
 const LoginUser = () => {
   const [state, setState] = useState('Login')
   const [name, setName] = useState('');
-  const [password, setPasword] = useState('');
+  const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const {setShowLogin}=useContext(AppContext);
+  const [phone,setPhone]=useState('');
+  const { setShowLogin, backendUrl, setToken, setUser } = useContext(AppContext);
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    try {
+      if (state === 'Login') {
+        const { data } = await axios.post(backendUrl + '/api/v1/user/login', { email, password })
+        if (data.success) {
+          setToken(data.token)
+          setUser(data.user)
+          localStorage.setItem('token', data.token)
+          setShowLogin(false)
+        } else {
+          toast.error(data.message)
+        }
+      } else {
+        const { data } = await axios.post(backendUrl + '/api/v1/user/register', { name, email, password })
+        if (data.success) {
+          setToken(data.token)
+          setUser(data.user)
+          localStorage.setItem('token', data.token)
+          setShowLogin(false)
+        } else {
+          toast.error(data.message)
+        }
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
 
   }
 
@@ -37,7 +65,7 @@ const LoginUser = () => {
         </div>
         <div className='border border-gray-300 px-4 py-2 flex items-center gap-2 rounded-full mt-5'>
           <img src={assets.lock_icon} alt="" />
-          <input className='outline-none text-sm' onChange={e => setPasword(e.target.value)} value={password} type='password' placeholder='Password' required />
+          <input className='outline-none text-sm' onChange={e => setPassword(e.target.value)} value={password} type='password' placeholder='Password' required />
         </div>
 
         {state === 'Login' && <p className='text-sm text-gray-600 cursor-pointer mt-3'>Forgot Password?</p>}

@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from "react";
-import axios from "axios";
 import { jobsData } from "../assets/assets";
 
 export const AppContext=createContext()
@@ -12,7 +11,12 @@ export const AppContextProvider=(props)=>{
     const [isSearched,setIsSearched]=useState(false);
     const [jobs,setJobs]=useState([]);
     const [showRecruiterLogin,setShowRecruiterLogin]=useState(false)
-    const [showLogin,setShowLogin]=useState(false)
+
+    const [user,setUser]=useState(null);
+    const [showLogin,setShowLogin]=useState(false);
+    const [token,setToken]=useState(localStorage.getItem('token'))
+
+    const backendUrl=import.meta.env.VITE_BACKEND_URL;
 
 
     const fetchJob=async()=>{
@@ -26,7 +30,10 @@ export const AppContextProvider=(props)=>{
         isSearched,setIsSearched,
         jobs,setJobs,
         showRecruiterLogin,setShowRecruiterLogin,
-        showLogin,setShowLogin
+        showLogin,setShowLogin,
+        user,setUser,
+        token,setToken,
+        backendUrl
     }
     
     return (<AppContext.Provider value={value}>
