@@ -85,8 +85,10 @@ export const login = async (req, res) => {
         }
         const userToken = generateToken(user._id);
         res.cookie("userToken", userToken, {
-            secure: process.env.NODE_ENV === "production", 
+            secure: true, 
             sameSite: "None",
+            httpOnly: true,
+            domain: ".vercel.app",
             maxAge: 7 * 24 * 60 * 60 * 1000, 
         });
         res.status(200).json({
