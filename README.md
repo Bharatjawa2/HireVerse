@@ -1,8 +1,5 @@
 # Hireverse - Job Portal Website
 
-<img width="400" alt="Image" src="https://github.com/user-attachments/assets/def29520-93c7-43b9-af77-ef0baa96b677" />
-<img width="400" alt="Image" src="https://github.com/user-attachments/assets/95451200-239c-41b7-a333-b80643c41fc0" />
-<img width="440" alt="Image" src="https://github.com/user-attachments/assets/bdff85af-6cb0-47c2-a819-07a4ce9330ea" />
 
 Hireverse is a modern job portal website designed to connect job seekers with employers seamlessly. Whether you're looking for your dream job or trying to find the perfect candidate for your company, Hireverse provides a user-friendly platform to make the process efficient and effective.
 
