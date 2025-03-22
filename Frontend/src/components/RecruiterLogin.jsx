@@ -4,7 +4,6 @@ import { AppContext } from '../context/Appcontext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Cookies from 'js-cookie'; 
 
 const RecruiterLogin = () => {
     const navigate = useNavigate();
@@ -16,15 +15,22 @@ const RecruiterLogin = () => {
     const [preview, setPreview] = useState(null);
     const [isTextDataSubmitted, setIsTextDataSubmitted] = useState(false);
 
-    const { setShowRecruiterLogin, backendUrl, setCompanyToken, setCompanyData} = useContext(AppContext);
+    // State for error messages
+    const [nameError, setNameError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [imageError, setImageError] = useState('');
+
+    const { setShowRecruiterLogin, backendUrl, setCompanyToken, setCompanyData } = useContext(AppContext);
 
     useEffect(() => {
         if (image) {
             const imgUrl = URL.createObjectURL(image);
             setPreview(imgUrl);
-            return () => URL.revokeObjectURL(imgUrl); 
+            return () => URL.revokeObjectURL(imgUrl);
         }
     }, [image]);
+
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => {
@@ -32,40 +38,92 @@ const RecruiterLogin = () => {
         };
     }, []);
 
+    // Validate form fields
+    const validateForm = () => {
+        let isValid = true;
+
+        // Reset error messages
+        setNameError('');
+        setEmailError('');
+        setPasswordError('');
+        setImageError('');
+
+        if (state === 'Sign Up' && !isTextDataSubmitted) {
+            if (!name.trim()) {
+                setNameError('Company Name is required');
+                isValid = false;
+            }
+            if (!email.trim()) {
+                setEmailError('Email is required');
+                isValid = false;
+            } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
+                setEmailError('Invalid email address');
+                isValid = false;
+            }
+            if (!password.trim()) {
+                setPasswordError('Password is required');
+                isValid = false;
+            } else if (password.length < 8) {
+                setPasswordError('Password must be at least 8 characters');
+                isValid = false;
+            }
+        } else if (state === 'Sign Up' && isTextDataSubmitted) {
+            if (!image) {
+                setImageError('Company Logo is required');
+                isValid = false;
+            }
+        } else if (state === 'Login') {
+            if (!email.trim()) {
+                setEmailError('Email is required');
+                isValid = false;
+            }
+            if (!password.trim()) {
+                setPasswordError('Password is required');
+                isValid = false;
+            }
+        }
+
+        return isValid;
+    };
+
     const onSubmitHandler = async (e) => {
         e.preventDefault();
-    
+
+        if (!validateForm()) {
+            return; // Stop if validation fails
+        }
+
         if (state === 'Sign Up' && !isTextDataSubmitted) {
             return setIsTextDataSubmitted(true);
         }
+
         try {
             if (state === 'Login') {
-                const { data } = await axios.post(`${backendUrl}/api/v2/company/login`,{email,password},{withCredentials:true});
+                const { data } = await axios.post(`${backendUrl}/api/v2/company/login`, { email, password }, { withCredentials: true });
                 if (data.success) {
                     console.log("API Response:", data);
                     setCompanyData(data.company);
                     setCompanyToken(true);
                     setShowRecruiterLogin(false);
                     navigate('/dashboard');
-                }
-                else{
+                } else {
                     toast.error(data.message);
                 }
-            }else{
-                const formData=new FormData();
-                formData.append('name',name);
-                formData.append('password',password);
-                formData.append('email',email); 
-                formData.append('image',image);
+            } else {
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('password', password);
+                formData.append('email', email);
+                formData.append('image', image);
 
-                const { data } = await axios.post(`${backendUrl}/api/v2/company/register `,formData,{withCredentials:true});
-                if(data.success){
+                const { data } = await axios.post(`${backendUrl}/api/v2/company/register`, formData, { withCredentials: true });
+                if (data.success) {
                     console.log("API Response:", data);
-                    setCompanyData(data.company);  
+                    setCompanyData(data.company);
                     setCompanyToken(true);
                     setShowRecruiterLogin(false);
                     navigate('/dashboard');
-                }else{
+                } else {
                     toast.error(data.message);
                 }
             }
@@ -84,7 +142,6 @@ const RecruiterLogin = () => {
             }
         }
     };
-    
 
     return (
         <div className="absolute top-0 left-0 right-0 bottom-0 z-10 backdrop-blur-sm bg-black/30 flex justify-center items-center">
@@ -103,6 +160,7 @@ const RecruiterLogin = () => {
                             <input onChange={(e) => setImage(e.target.files[0])} type="file" id="image" hidden />
                         </label>
                         <p>Upload Company <br /> Logo </p>
+                        {imageError && <p className="text-red-500 text-sm mt-1">{imageError}</p>}
                     </div>
                 ) : (
                     <>
@@ -119,6 +177,7 @@ const RecruiterLogin = () => {
                                 />
                             </div>
                         )}
+                        {nameError && <p className="text-red-500 text-sm mt-1">{nameError}</p>}
 
                         <div className="border border-gray-300 px-4 py-2 flex items-center gap-2 rounded-full mt-5">
                             <img src={assets.email_icon} alt="Email Icon" />
@@ -131,6 +190,7 @@ const RecruiterLogin = () => {
                                 required
                             />
                         </div>
+                        {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
 
                         <div className="border border-gray-300 px-4 py-2 flex items-center gap-2 rounded-full mt-5">
                             <img src={assets.lock_icon} alt="Lock Icon" />
@@ -143,6 +203,7 @@ const RecruiterLogin = () => {
                                 required
                             />
                         </div>
+                        {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
                     </>
                 )}
 

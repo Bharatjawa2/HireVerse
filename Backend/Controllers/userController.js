@@ -1,7 +1,5 @@
 import UserModel from '../Models/User.js';
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken';
-import cookie from 'cookie-parser';
 import generateToken from '../Utils/generateTokens.js';
 import JobModel from '../Models/Job.js';
 import applicationModel from '../Models/Application.js';
@@ -273,6 +271,58 @@ export const checkAuthStatus = async (req, res) => {
         });
     } catch (error) {
         console.error("Error checking auth status:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+
+// Update Profile Picture
+export const updateProfilePicture = async (req, res) => {
+    try {
+        const userId = req.user._id; 
+        const imageFile = req.file; 
+
+        if (!imageFile) {
+            return res.status(400).json({
+                success: false,
+                message: "No image file provided",
+            });
+        }
+
+        // Upload the image to Cloudinary
+        const result = await cloudinary.uploader.upload(imageFile.path, {
+            folder: 'profile_pictures', 
+        });
+
+        // Update the user's profile picture in the database
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            userId,
+            { image: result.secure_url }, // Save the Cloudinary URL
+            { new: true } // Return the updated user
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Profile picture updated successfully",
+            user: {
+                _id: updatedUser._id,
+                name: updatedUser.name,
+                email: updatedUser.email,
+                image: updatedUser.image,
+            },
+        });
+    } catch (error) {
+        console.error("Error updating profile picture:", error);
         res.status(500).json({
             success: false,
             message: "Internal Server Error",
