@@ -45,7 +45,6 @@ const RecruiterLogin = () => {
                     console.log("API Response:", data);
                     setCompanyData(data.company);
                     setCompanyToken(data.companyToken);
-                    Cookies.set('companyToken', data.companyToken, { secure: true, sameSite: 'strict' });
                     setShowRecruiterLogin(false);
                     navigate('/dashboard');
                 }
@@ -62,9 +61,8 @@ const RecruiterLogin = () => {
                 const { data } = await axios.post(`${backendUrl}/api/v2/company/register `,formData,{withCredentials:true});
                 if(data.success){
                     console.log("API Response:", data);
-                    setCompanyData(data.company);
+                    setCompanyData(data.company);  
                     setCompanyToken(data.companyToken);
-                    Cookies.set('companyToken', data.companyToken, { secure: true, sameSite: 'strict' });
                     setShowRecruiterLogin(false);
                     navigate('/dashboard');
                 }else{

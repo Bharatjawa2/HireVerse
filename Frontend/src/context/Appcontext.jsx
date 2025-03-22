@@ -90,7 +90,8 @@ export const AppContextProvider = (props) => {
   useEffect(() => {
     const storedCompanyToken = Cookies.get('companytoken');
     const storedUserToken = Cookies.get('userToken');
-
+    console.log("Stored Company Token:", storedCompanyToken);
+    console.log("Stored User Token:", storedUserToken);
     if (storedCompanyToken) {
       setCompanyToken(storedCompanyToken);
     }
