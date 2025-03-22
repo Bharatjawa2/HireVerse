@@ -15,8 +15,8 @@ const Navbar = () => {
     userToken,
     backendUrl,
   } = useContext(AppContext);
-  const [showDropdown, setShowDropdown] = useState(false); // State for dropdown visibility
-  const fileInputRef = useRef(null); // Ref for file input
+  const [showDropdown, setShowDropdown] = useState(false); 
+  const fileInputRef = useRef(null); 
 
   const handleShowRecruiterLogin = () => {
     setShowRecruiterLogin(true);
@@ -36,9 +36,9 @@ const Navbar = () => {
         { withCredentials: true }
       );
       if (data.success) {
-        setUserData(null); // Clear user data from context
-        setUserToken(false); // Set userToken to false
-        navigate('/'); // Redirect to home page
+        setUserData(null); 
+        setUserToken(false); 
+        navigate('/');
       } else {
         console.error('Logout failed:', data.message);
       }
@@ -52,7 +52,7 @@ const Navbar = () => {
     if (!file) return;
 
     const formData = new FormData();
-    formData.append('file', file); // Append the file to FormData
+    formData.append('file', file);
 
     try {
       const { data } = await axios.post(
@@ -64,7 +64,7 @@ const Navbar = () => {
       );
 
       if (data.success) {
-        setUserData(data.user); // Update user data in context
+        setUserData(data.user); 
         alert('Profile picture updated successfully');
       } else {
         alert('Failed to update profile picture');
@@ -76,15 +76,15 @@ const Navbar = () => {
   };
 
   const handleMouseEnter = () => {
-    setShowDropdown(true); // Show dropdown on mouse enter
+    setShowDropdown(true); 
   };
 
   const handleMouseLeave = () => {
-    setShowDropdown(false); // Hide dropdown on mouse leave
+    setShowDropdown(false); 
   };
 
   const handleChangeProfilePicture = () => {
-    fileInputRef.current.click(); // Trigger file input
+    fileInputRef.current.click(); 
   };
 
   return (
@@ -105,8 +105,8 @@ const Navbar = () => {
             <p className='max-sm:hidden text-gray-600'>Hi, {userData ? userData.name : 'User'}</p>
             <div
               className='relative'
-              onMouseEnter={handleMouseEnter} // Show dropdown on mouse enter
-              onMouseLeave={handleMouseLeave} // Hide dropdown on mouse leave
+              onMouseEnter={handleMouseEnter} 
+              onMouseLeave={handleMouseLeave} 
             >
               <img
                 src={userData?.image || assets.profile_img}

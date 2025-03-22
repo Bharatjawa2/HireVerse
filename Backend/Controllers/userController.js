@@ -5,10 +5,9 @@ import JobModel from '../Models/Job.js';
 import applicationModel from '../Models/Application.js';
 import { v2 as cloudinary } from "cloudinary";
 
-// REGISTER USER
 export const register = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const {name, email, password} = req.body;
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
@@ -58,7 +57,6 @@ export const register = async (req, res) => {
     }
 };
 
-// LOGIN USER
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -110,7 +108,6 @@ export const login = async (req, res) => {
     }
 };
 
-// LOGOUT
 export const logout = async (req, res) => {
     try {
         res.cookie("userToken", "", {
@@ -215,7 +212,6 @@ export const getUserJobApplications = async (req, res) => {
     }
 };
 
-
 export const updateUserResume = async (req, res) => {
     try {
         const userId = req.user._id;
@@ -247,9 +243,6 @@ export const updateUserResume = async (req, res) => {
     }
 };
 
-
-
-
 export const checkAuthStatus = async (req, res) => {
     try {
         const user = req.user; 
@@ -278,8 +271,6 @@ export const checkAuthStatus = async (req, res) => {
     }
 };
 
-
-// Update Profile Picture
 export const updateProfilePicture = async (req, res) => {
     try {
         const userId = req.user._id; 
@@ -291,26 +282,20 @@ export const updateProfilePicture = async (req, res) => {
                 message: "No image file provided",
             });
         }
-
-        // Upload the image to Cloudinary
         const result = await cloudinary.uploader.upload(imageFile.path, {
             folder: 'profile_pictures', 
         });
-
-        // Update the user's profile picture in the database
         const updatedUser = await UserModel.findByIdAndUpdate(
             userId,
-            { image: result.secure_url }, // Save the Cloudinary URL
-            { new: true } // Return the updated user
+            { image: result.secure_url }, 
+            { new: true }
         );
-
         if (!updatedUser) {
             return res.status(404).json({
                 success: false,
                 message: "User not found",
             });
         }
-
         res.status(200).json({
             success: true,
             message: "Profile picture updated successfully",

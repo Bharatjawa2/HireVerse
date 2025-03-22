@@ -15,7 +15,6 @@ const RecruiterLogin = () => {
     const [preview, setPreview] = useState(null);
     const [isTextDataSubmitted, setIsTextDataSubmitted] = useState(false);
 
-    // State for error messages
     const [nameError, setNameError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -38,11 +37,8 @@ const RecruiterLogin = () => {
         };
     }, []);
 
-    // Validate form fields
     const validateForm = () => {
         let isValid = true;
-
-        // Reset error messages
         setNameError('');
         setEmailError('');
         setPasswordError('');
@@ -90,7 +86,7 @@ const RecruiterLogin = () => {
         e.preventDefault();
 
         if (!validateForm()) {
-            return; // Stop if validation fails
+            return; 
         }
 
         if (state === 'Sign Up' && !isTextDataSubmitted) {

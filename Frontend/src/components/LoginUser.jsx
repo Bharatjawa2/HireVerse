@@ -11,12 +11,7 @@ const LoginUser = () => {
   const navigate = useNavigate();
   const { backendUrl, setShowLogin, setUserToken, setUserData } = useContext(AppContext);
 
-  // React Hook Form
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const {register,handleSubmit,formState: { errors },} = useForm();
 
   const onSubmitHandler = async (formData) => {
     try {

@@ -12,15 +12,11 @@ const Dashboard = () => {
 
     const logout = async () => {
         try {
-            const { data } = await axios.post(
-                `${backendUrl}/api/v2/company/logout`,
-                {},
-                { withCredentials: true }
-            );
+            const { data } = await axios.post(`${backendUrl}/api/v2/company/logout`,{},{ withCredentials: true });
             if (data.success) {
-                setCompanyToken(false); // Set companyToken to false
-                setCompanyData(null); // Clear company data from context
-                navigate('/'); // Redirect to home page
+                setCompanyToken(false); 
+                setCompanyData(null); 
+                navigate('/'); 
             } else {
                 console.error('Logout failed:', data.message);
             }

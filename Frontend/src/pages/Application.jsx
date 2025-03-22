@@ -17,7 +17,7 @@ const Application = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await fetchUserData(); // Fetch user data
+        await fetchUserData();
         setIsLoading(false);
       } catch (error) {
         toast.error(error.message);
@@ -47,7 +47,7 @@ const Application = () => {
   };
 
   if (isLoading) {
-    return <p>Loading...</p>; // Show a loading spinner or message
+    return <p>Loading...</p>; 
   }
 
   return (

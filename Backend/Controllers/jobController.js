@@ -1,12 +1,9 @@
-import express from 'express'
 import JobModel from '../Models/Job.js'
-
 
 export const getJob = async (req, res) => {
     try {
         const jobs = await JobModel.find({ visible: true })
-            .populate({ path: "companyId", select: "-password" });
-
+        .populate({ path: "companyId", select: "-password" });
         if (!jobs || jobs.length === 0) {
             return res.status(404).json({
                 success: false,
@@ -29,7 +26,7 @@ export const getJob = async (req, res) => {
 
 export const getJobById = async (req, res) => {
     try {
-        const { id } = req.params;   
+        const {id} = req.params;
         if (!id) {
             return res.status(400).json({
                 success: false,

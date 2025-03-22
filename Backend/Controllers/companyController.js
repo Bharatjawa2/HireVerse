@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import companyModel from "../Models/Company.js";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
@@ -6,10 +5,10 @@ import generateToken from "../Utils/generateTokens.js";
 import JobModel from "../Models/Job.js";
 import applicationModel from "../Models/Application.js";
 
-// Register company
+
 export const registerCompany = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const {name, email, password} = req.body;
         const imageFile = req.file;
         if (!name || !email || !password || !imageFile) {
             return res.status(400).json({
@@ -67,10 +66,9 @@ export const registerCompany = async (req, res) => {
     }
 };
 
-// Company Login
 export const loginCompany = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const {email, password} = req.body;
         if (!email || !password) {
             return res.status(400).json({
                 message: "Email and password are required.",
@@ -166,17 +164,14 @@ export const getCompanyData = async (req, res) => {
 
 export const postJob = async (req, res) => {
     try {
-        const { title, description, location, salary, category, level } = req.body;
-
+        const {title, description, location, salary, category, level} = req.body;
         if (!title || !description || !location || !salary || !category || !level) {
             return res.status(400).json({
                 message: "All fields are required",
                 success: false,
             });
         }
-
-        const companyId = req.company._id; // Get company ID from isCompanyAuth middleware
-
+        const companyId = req.company._id; 
         const newJob = new JobModel({
             title,
             description,
@@ -185,11 +180,9 @@ export const postJob = async (req, res) => {
             category,
             level,
             companyId,
-            date: Date.now(), // Store the job posting date
+            date: Date.now(), 
         });
-
         await newJob.save();
-
         return res.status(201).json({
             message: "Job posted successfully",
             success: true,
@@ -234,10 +227,8 @@ export const getCompanyPostedJobs = async (req, res) => {
                 message: "Unauthorized access. Company not found.",
             });
         }
-
         const companyId = req.company._id;
         const jobs = await JobModel.find({ companyId });
-
         const jobsData = await Promise.all(
             jobs.map(async (job) => {
                 const applicants = await applicationModel.find({ jobId: job._id });
@@ -274,32 +265,25 @@ export const changeJobApplicantsStatus=async(req,res)=>{
     }
 }
 
-
 export const changeVisibility = async (req, res) => {
     try {
-        const { id } = req.body;
+        const {id} = req.body;
         const companyId = req.company._id;
-        
         const job = await JobModel.findById(id);
-
         if (!job) {
             return res.status(404).json({
                 success: false,
                 message: "Job not found",
             });
         }
-
         if (companyId.toString() !== job.companyId.toString()) {
             return res.status(403).json({
                 success: false,
                 message: "Not authorized to change visibility",
             });
         }
-
         job.visible = !job.visible;
-
         await job.save();
-
         res.status(200).json({
             success: true,
             message: "Visibility changed successfully",
