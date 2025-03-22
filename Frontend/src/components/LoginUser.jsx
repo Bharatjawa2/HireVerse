@@ -3,42 +3,55 @@ import { AppContext } from '../context/Appcontext';
 import { assets } from '../assets/assets';
 import axios from 'axios'
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const LoginUser = () => {
   const [state, setState] = useState('Login')
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [phone,setPhone]=useState('');
-  const { setShowLogin, backendUrl, setToken, setUser } = useContext(AppContext);
+  const navigate = useNavigate();
+  const { backendUrl, setShowLogin, setUserToken, setUserData } = useContext(AppContext);
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
       if (state === 'Login') {
-        const { data } = await axios.post(backendUrl + '/api/v1/user/login', { email, password })
+        const { data } = await axios.post(`${backendUrl}/api/v2/user/login`, {email, password }, { withCredentials: true });
         if (data.success) {
-          setToken(data.token)
-          setUser(data.user)
-          localStorage.setItem('token', data.token)
-          setShowLogin(false)
+          console.log("User Response:", data);
+          setUserToken(data.userToken);
+          setUserData(data.user);
+          setShowLogin(false);
+          navigate('/');
         } else {
-          toast.error(data.message)
+          toast.error(data.message);
         }
-      } else {
-        const { data } = await axios.post(backendUrl + '/api/v1/user/register', { name, email, password })
+      }else{
+        const {data}=await axios.post(`${backendUrl}/api/v2/user/register`,{name,email,password},{withCredentials:true});
         if (data.success) {
-          setToken(data.token)
-          setUser(data.user)
-          localStorage.setItem('token', data.token)
-          setShowLogin(false)
+          console.log("User Response:", data);
+          setUserToken(data.userToken);
+          setUserData(data.user);
+          setShowLogin(false);
+          navigate('/');
         } else {
-          toast.error(data.message)
+          toast.error(data.message);
         }
       }
     } catch (error) {
-      toast.error(error.message)
+      console.error('Login error:', error);
+      if (error.response) {
+        if (error.response.status === 404) {
+          toast.error("Company not found");
+        } else if (error.response.status === 401) {
+          toast.error("Invalid credentials");
+        } else {
+          toast.error(error.response.data.message || "Something went wrong. Please try again.");
+        }
+      } else {
+        toast.error("Something went wrong. Please check your network and try again.");
+      }
     }
-
   }
 
   useEffect(() => {

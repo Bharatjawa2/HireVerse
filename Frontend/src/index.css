@@ -15,6 +15,10 @@ button{
     }
 }
 
+.group:hover .group-hover\:block {
+    display: block;
+  }
+
 ::-webkit-scrollbar{
     display: none;
 }

@@ -1,13 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { assets } from '../assets/assets';
+import { AppContext } from '../context/Appcontext';
+import Cookies from 'js-cookie';
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const {companyData,setCompanyData,setCompanyToken}=useContext(AppContext);
+
+    const logout=()=>{
+        Cookies.remove('companytoken', { secure: true, sameSite: 'strict' });
+        setCompanyToken(null)
+        setCompanyData(null)
+        navigate('/')
+    }
+
+    useEffect(()=>{
+        if(companyData){
+            navigate('/dashboard/manage-jobs');
+        }
+    },[companyData])
 
     useEffect(() => {
-        // Scroll to top on route change
         window.scrollTo(0, 0);
     }, [location.pathname]);
 
@@ -17,26 +32,28 @@ const Dashboard = () => {
             <div className="shadow py-4">
                 <div className="px-5 flex justify-between items-center">
                     <img
-                        onClick={() => navigate('/')}
                         className='max-sm:w-32 cursor-pointer w-50 h-14 object-contain'
                         src={assets.hire}
                         alt=""
                     />
-                    <div className="flex gap-3 items-center">
-                        <p className='max-sm:hidden'>Welcome, Bharat</p>
+                    {companyData && (
+                        <div className="flex gap-3 items-center">
+                        <p className='max-sm:hidden'>Welcome, {companyData.name}</p>
                         <div className="relative group">
                             <img
                                 className='w-8 border rounded-full border-gray-200'
-                                src={assets.company_icon}
+                                src={companyData.image}
                                 alt=""
                             />
                             <div className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12">
                                 <ul className='list-none m-0 p-2 bg-white rounded-md border border-gray-100 text-sm'>
-                                    <li className='py-1 px-2 cursor-pointer pr-5'>Logout</li>
+                                    <li onClick={logout} className='py-1 px-2 cursor-pointer pr-5'>Logout</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
+                    )}
+                    
                 </div>
             </div>
 
