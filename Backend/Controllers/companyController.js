@@ -42,6 +42,7 @@ export const registerCompany = async (req, res) => {
         await newCompany.save();
         const companyToken = generateToken(newCompany._id);
         res.cookie("companytoken", companyToken, {
+            httpOnly: true,
             secure: process.env.NODE_ENV === "production", 
             sameSite: "None",
             maxAge: 7 * 24 * 60 * 60 * 1000, 
@@ -92,6 +93,7 @@ export const loginCompany = async (req, res) => {
         }
         const companyToken = generateToken(company._id)
         res.cookie("companytoken", companyToken, {
+            httpOnly: true,
             secure: process.env.NODE_ENV === "production", 
             sameSite: "None",
             maxAge: 7 * 24 * 60 * 60 * 1000,
