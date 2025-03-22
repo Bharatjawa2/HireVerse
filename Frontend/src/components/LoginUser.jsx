@@ -19,7 +19,7 @@ const LoginUser = () => {
         const { data } = await axios.post(`${backendUrl}/api/v2/user/login`, {email, password }, { withCredentials: true });
         if (data.success) {
           console.log("User Response:", data);
-          setUserToken(data.userToken);
+          setUserToken(true);
           setUserData(data.user);
           setShowLogin(false);
           navigate('/');
@@ -30,7 +30,7 @@ const LoginUser = () => {
         const {data}=await axios.post(`${backendUrl}/api/v2/user/register`,{name,email,password},{withCredentials:true});
         if (data.success) {
           console.log("User Response:", data);
-          setUserToken(data.userToken);
+          setUserToken(true);
           setUserData(data.user);
           setShowLogin(false);
           navigate('/');

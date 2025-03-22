@@ -44,7 +44,7 @@ const RecruiterLogin = () => {
                 if (data.success) {
                     console.log("API Response:", data);
                     setCompanyData(data.company);
-                    setCompanyToken(data.companyToken);
+                    setCompanyToken(true);
                     setShowRecruiterLogin(false);
                     navigate('/dashboard');
                 }
@@ -62,7 +62,7 @@ const RecruiterLogin = () => {
                 if(data.success){
                     console.log("API Response:", data);
                     setCompanyData(data.company);  
-                    setCompanyToken(data.companyToken);
+                    setCompanyToken(true);
                     setShowRecruiterLogin(false);
                     navigate('/dashboard');
                 }else{

@@ -2,11 +2,19 @@ import React, { useContext, useState } from 'react';
 import { assets } from '../assets/assets';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/Appcontext';
-import Cookies from 'js-cookie';
+import axios from 'axios';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { setShowRecruiterLogin, setShowLogin, setUserToken, setUserData, userData, userToken } = useContext(AppContext);
+  const {
+    setShowRecruiterLogin,
+    setShowLogin,
+    setUserToken,
+    setUserData,
+    userData,
+    userToken,
+    backendUrl,
+  } = useContext(AppContext);
   const [showLogout, setShowLogout] = useState(false); // State to control logout button visibility
 
   const handleShowRecruiterLogin = () => {
@@ -19,11 +27,23 @@ const Navbar = () => {
     setShowRecruiterLogin(false);
   };
 
-  const logout = () => {
-    Cookies.remove('userToken', { secure: true, sameSite: 'strict' });
-    setUserData(null);
-    setUserToken(null);
-    navigate('/');
+  const logout = async () => {
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/api/v2/user/logout`,
+        {},
+        { withCredentials: true }
+      );
+      if (data.success) {
+        setUserData(null); // Clear user data from context
+        setUserToken(false); // Set userToken to false
+        navigate('/'); // Redirect to home page
+      } else {
+        console.error('Logout failed:', data.message);
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
@@ -37,23 +57,23 @@ const Navbar = () => {
         />
         {userToken ? (
           <div className='flex items-center gap-3'>
-            <Link to="/application">Applied Jobs</Link>
+            <Link to='/application'>Applied Jobs</Link>
             <p className='max-sm:hidden'>|</p>
-            <p className='max-sm:hidden'>Hi, {userData ? userData.name : "User"}</p>
+            <p className='max-sm:hidden'>Hi, {userData ? userData.name : 'User'}</p>
             <div
-              className="relative"
+              className='relative'
               onMouseEnter={() => setShowLogout(true)} // Show logout button on hover
               onMouseLeave={() => setShowLogout(false)} // Hide logout button on mouse leave
             >
               <img
                 src={userData?.image || assets.profile_img}
-                alt="Profile"
-                className="w-10 h-10 rounded-full cursor-pointer border-2 border-gray-300"
+                alt='Profile'
+                className='w-10 h-10 rounded-full cursor-pointer border-2 border-gray-300'
               />
               {showLogout && (
                 <button
                   onClick={logout}
-                  className="absolute top-10 right-0 bg-white text-gray-700 px-4 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-all"
+                  className='absolute top-10 right-0 bg-white text-gray-700 px-4 py-2 rounded-lg shadow-md hover:bg-gray-100 transition-all'
                 >
                   Logout
                 </button>
@@ -65,7 +85,10 @@ const Navbar = () => {
             <button onClick={handleShowRecruiterLogin} className='text-gray-600'>
               Recruiter Login
             </button>
-            <button onClick={handleShowUserLogin} className='bg-gray-600 text-white px-6 sm:px-9 py-2 rounded-full'>
+            <button
+              onClick={handleShowUserLogin}
+              className='bg-gray-600 text-white px-6 sm:px-9 py-2 rounded-full'
+            >
               Login
             </button>
           </div>

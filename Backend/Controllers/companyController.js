@@ -119,6 +119,28 @@ export const loginCompany = async (req, res) => {
 };
 
 
+export const logout = async (req, res) => {
+    try {
+        res.cookie("companytoken", "", {
+            httpOnly: true,
+            expires: new Date(0),
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "None",
+        });
+        res.status(200).json({
+            success: true,
+            message: "Logged out successfully",
+        });
+    } catch (error) {
+        console.error("Error during logout:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+
 export const getCompanyData = async (req, res) => {
     try {
         const company=req.company
@@ -292,3 +314,31 @@ export const changeVisibility = async (req, res) => {
         });
     }
 };
+
+
+export const checkCompanyAuthStatus = async (req, res) => {
+    try {
+      const company = req.company; 
+      if (!company) {
+        return res.status(401).json({
+          success: false,
+          message: "Not authenticated",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        company: {
+          _id: company._id,
+          name: company.name,
+          email: company.email,
+          image: company.image,
+        },
+      });
+    } catch (error) {
+      console.error("Error checking company auth status:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  };

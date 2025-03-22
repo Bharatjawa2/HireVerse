@@ -3,18 +3,31 @@ import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { assets } from '../assets/assets';
 import { AppContext } from '../context/Appcontext';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const {companyData,setCompanyData,setCompanyToken}=useContext(AppContext);
+    const {companyData,setCompanyData,setCompanyToken,backendUrl}=useContext(AppContext);
 
-    const logout=()=>{
-        Cookies.remove('companytoken', { secure: true, sameSite: 'strict' });
-        setCompanyToken(null)
-        setCompanyData(null)
-        navigate('/')
-    }
+    const logout = async () => {
+        try {
+            const { data } = await axios.post(
+                `${backendUrl}/api/v2/company/logout`,
+                {},
+                { withCredentials: true }
+            );
+            if (data.success) {
+                setCompanyToken(false); // Set companyToken to false
+                setCompanyData(null); // Clear company data from context
+                navigate('/'); // Redirect to home page
+            } else {
+                console.error('Logout failed:', data.message);
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
 
     useEffect(()=>{
         if(companyData){

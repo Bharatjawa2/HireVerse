@@ -31,14 +31,14 @@ export const register = async (req, res) => {
             email,
             password: hashedPassword,
             image: "",
-            resume: "",  
+            resume: "",
         });
         const userToken = generateToken(newUser._id);
         res.cookie("userToken", userToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", 
+            secure: process.env.NODE_ENV === "production",
             sameSite: "None",
-            maxAge: 7 * 24 * 60 * 60 * 1000, 
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         res.status(201).json({
             success: true,
@@ -87,9 +87,9 @@ export const login = async (req, res) => {
         const userToken = generateToken(user._id);
         res.cookie("userToken", userToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", 
+            secure: process.env.NODE_ENV === "production",
             sameSite: "None",
-            maxAge: 7 * 24 * 60 * 60 * 1000, 
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         res.status(200).json({
             success: true,
@@ -98,7 +98,7 @@ export const login = async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                image: user.image, 
+                image: user.image,
                 resume: user.resume,
             },
             userToken,
@@ -116,7 +116,8 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
     try {
         res.cookie("userToken", "", {
-            expires: new Date(0), 
+            httpOnly: true,
+            expires: new Date(0),
             secure: process.env.NODE_ENV === "production",
             sameSite: "None",
         });
@@ -174,7 +175,7 @@ export const applyForJob = async (req, res) => {
             return res.status(404).json({
                 success: false,
                 message: "Job not found.",
-            }); 
+            });
         }
         await applicationModel.create({
             companyId: jobData.companyId,
@@ -220,7 +221,7 @@ export const getUserJobApplications = async (req, res) => {
 export const updateUserResume = async (req, res) => {
     try {
         const userId = req.user._id;
-        const resumeFile = req.file; 
+        const resumeFile = req.file;
         const userData = await UserModel.findById(userId);
         if (!userData) {
             return res.status(404).json({
@@ -249,3 +250,32 @@ export const updateUserResume = async (req, res) => {
 };
 
 
+
+
+export const checkAuthStatus = async (req, res) => {
+    try {
+        const user = req.user; 
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Not authenticated",
+            });
+        }
+        res.status(200).json({
+            success: true,
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                image: user.image,
+                resume: user.resume,
+            },
+        });
+    } catch (error) {
+        console.error("Error checking auth status:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
